@@ -4,12 +4,15 @@ import { Wallet, Plus, Users, ArrowRight, Sparkles, X } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from "axios";
+import { useAccount } from "wagmi";
 
 const Index = () => {
 
   const router = useRouter();
   const [joinProp,setJoinProp] = useState<boolean>(false);
   const [roomId,setRoomId] = useState<string>("");
+  const {address} = useAccount();
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -74,9 +77,29 @@ const Index = () => {
     exit: { opacity: 0 }
   };
 
-  const handleJoinRoom = () => {
-    if (roomId.trim()) {
-      router.push(`/room/${roomId}`);
+  const handleJoinRoom = async() => {
+    if(!address){
+      alert("Connect your wallet");
+      return;
+    }
+    if (roomId.trim().length === 0) {
+      alert("Enter room Id")
+      return;
+    }
+    else {
+      const res = await axios.post('/api/room',{
+          roomId : roomId
+      })
+
+      if(res.data.type === "room-id-not-given"){
+        return alert("Enter room Id");
+      }
+      else if(res.data.type === "not-found"){
+        return alert("No such room exists");
+      }
+      else {
+        return router.push(`/room/${roomId}/${address}`);
+      }
     }
   };
 
