@@ -1,5 +1,7 @@
+"use client"
 import '@rainbow-me/rainbowkit/styles.css';
 import {
+    darkTheme,
   getDefaultConfig,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
@@ -20,14 +22,17 @@ const config = getDefaultConfig({
   });
 
 const queryClient = new QueryClient();
-  const App = ({children}: {children: React.ReactNode}) => {
+
+const WalletProvider = ({children}: {children: React.ReactNode}) => {
     return (
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider>
+          <RainbowKitProvider theme={darkTheme()}>
             {children}
           </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
     );
 };
+
+export default WalletProvider;
