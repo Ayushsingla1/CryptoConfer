@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { Rooms } from "../webhook-events/route"
+import { Rooms } from "../../lib/rooms-data";
 
 export const POST = async(req : NextRequest) => {
 

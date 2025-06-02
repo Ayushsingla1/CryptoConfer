@@ -73,9 +73,9 @@ const CreateRoom = () => {
                 const message = `Creating a room with name ${data.roomName} and no rule`;
                 const signature = await signMessageAsync({message : message});
                 console.log(signature)
-                // if(signature !== undefined){
-                //     router.push(`/room/${signature.slice(0,10)}}/${address}`)
-                // }
+                if(signature !== undefined){
+                    router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                }
             }
             else if(selectedRule === 1){
                 console.log("Creating a room with nft rule");
@@ -87,9 +87,9 @@ const CreateRoom = () => {
                     const message = `Creating a room with name ${data.roomName} and nft rule having contract address ${data.nftContract}`;
                     const signature = await signMessageAsync({message : message});
                     console.log(signature)
-                    // if(signature !== undefined){
-                    //     router.push(`/room/${signature.slice(0,10)}}/${address}`)
-                    // }
+                    if(signature !== undefined){
+                        router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                    }
                 }
             }
             else{
@@ -101,9 +101,9 @@ const CreateRoom = () => {
                     const message = `Creating a room with name ${data.roomName} and nft rule having contract address ${data.tokenContract} and a count of ${data.tokenContract}`;
                     const signature = await signMessageAsync({message : message});
                     console.log(signature)
-                    // if(signature !== undefined){
-                    //      router.push(`/room/${signature.slice(0,10)}}/${address}`)
-                    // }
+                    if(signature !== undefined){
+                         router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                    }
                 }
             }
         }catch(e){

@@ -1,12 +1,11 @@
 'use client';
-
 import {
-  ControlBar,
   GridLayout,
   ParticipantTile,
   RoomAudioRenderer,
-  useTracks,
   RoomContext,
+  ControlBar,
+  useTracks
 } from '@livekit/components-react';
 import { Room, Track } from 'livekit-client';
 import '@livekit/components-styles';
@@ -42,7 +41,7 @@ export default function Page() {
       mounted = false;
       roomInstance.disconnect();
     };
-  }, [roomInstance]);
+  }, [roomInstance,room,name]);
 
   return (
     <RoomContext.Provider value={roomInstance}>

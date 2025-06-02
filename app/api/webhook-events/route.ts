@@ -1,17 +1,12 @@
 import { WebhookReceiver } from 'livekit-server-sdk';
 import { NextRequest, NextResponse } from 'next/server';
-
-type Room = {
-    id : string,
-    participants : Set<string>,
-}
+import { Rooms,Room } from '@/app/lib/rooms-data';
 
 const receiver = new WebhookReceiver(
   process.env.NEXT_PUBLIC_API_KEY!,
   process.env.NEXT_PUBLIC_API_SECRET!
 );
 
-export const Rooms = new Map<string,Room>();
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
@@ -26,24 +21,31 @@ export async function POST(req: NextRequest) {
     console.log(event.event);
 
     if(event.event === "room_started"){
+
+        if(!event.room?.name){
+          return;
+        }
         const room : Room = {
-            id : event.room?.name!,
+            id : event.room?.name,
             participants : new Set()
         }
-        Rooms.set(event.room?.name!,room);
+        Rooms.set(event.room?.name,room);
     }
     else if(event.event === "participant_joined"){
-        const roomId : string = event.room?.name!;
-        const participant : string = event.participant?.identity!;
+        if(!event.room?.name || !event.participant?.identity) return;
+        const roomId : string = event.room?.name;
+        const participant : string = event.participant?.identity;
         Rooms.get(roomId)?.participants.add(participant);
     }
     else if(event.event === "participant_left"){
-        const roomId : string = event.room?.name!;
-        const participant : string = event.participant?.identity!;
+        if(!event.room?.name || !event.participant?.identity) return;
+        const roomId : string = event.room?.name;
+        const participant : string = event.participant?.identity;
         Rooms.get(roomId)?.participants.delete(participant);
     }
     else if(event.event === "room_finished"){
-        const roomId : string = event.room?.name!;
+      if(!event.room?.name) return;
+        const roomId : string = event.room?.name;
         Rooms.delete(roomId);
     }
 
@@ -51,8 +53,9 @@ export async function POST(req: NextRequest) {
 
     return new NextResponse('Received', { status: 200 });
 
-  } catch (err: any) {
-    console.error('Webhook error:', err.message);
+  } 
+  catch (err) {
+    console.error('Webhook error:', err);
     return new NextResponse('Webhook validation failed', { status: 400 });
   }
 }
