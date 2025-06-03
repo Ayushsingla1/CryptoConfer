@@ -1,6 +1,6 @@
 import { WebhookReceiver } from 'livekit-server-sdk';
 import { NextRequest, NextResponse } from 'next/server';
-import { Rooms,Room } from '@/app/lib/rooms-data';
+import { Rooms,Room, Rule } from '@/app/lib/rooms-data';
 
 const receiver = new WebhookReceiver(
   process.env.NEXT_PUBLIC_API_KEY!,
@@ -8,6 +8,7 @@ const receiver = new WebhookReceiver(
 );
 
 export async function POST(req: NextRequest) {
+console.log(Rooms);
   try {
     const rawBody = await req.text();
     const authHeader = req.headers.get('authorization');
@@ -23,13 +24,22 @@ export async function POST(req: NextRequest) {
     if(event.event === "room_started"){
 
         if(!event.room?.name){
-          return;
+            return new NextResponse('Received', { status: 200 });
         }
-        const room : Room = {
+
+        if(Rooms.has(event.room.name)){
+            return new NextResponse('Received', { status: 200 });
+        }
+        else{
+            const room : Room = {
             id : event.room?.name,
-            participants : new Set()
+            participants : new Set(),
+            rules : {
+              type : Rule.NoRule
+            }
         }
-        Rooms.set(event.room?.name,room);
+          Rooms.set(event.room?.name,room);
+        }
     }
     else if(event.event === "participant_joined"){
         if(!event.room?.name || !event.participant?.identity) return;

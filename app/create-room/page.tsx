@@ -6,6 +6,8 @@ import React, { useState } from "react";
 import { containerVariants, floatingVariants, itemVariants } from "../components/create-room-motion";
 import { useAccount, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { Rule } from "../lib/rooms-data";
 
 const ruleOptions = [
     {
@@ -42,6 +44,7 @@ const CreateRoom = () => {
         tokenCount : 1,
     })
 
+    const [selectedRule,SetSelectedRule] = useState<number|null>(null);
     const router = useRouter();
 
     const changeHandler = (e : React.ChangeEvent<HTMLInputElement>) => {
@@ -72,9 +75,15 @@ const CreateRoom = () => {
                 console.log("Creating a room with no rule");
                 const message = `Creating a room with name ${data.roomName} and no rule`;
                 const signature = await signMessageAsync({message : message});
-                console.log(signature)
-                if(signature !== undefined){
-                    router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                if(signature != null){
+                    const res = await axios.put("/api/room",{
+                    owner : address,
+                    rule : Rule.NoRule,
+                    roomId : signature.slice(0,10)
+                    });
+                    if(res.data.success){
+                        router.push(`/room/${signature.slice(0,10)}/${address}`);
+                    }
                 }
             }
             else if(selectedRule === 1){
@@ -86,10 +95,17 @@ const CreateRoom = () => {
                 else {
                     const message = `Creating a room with name ${data.roomName} and nft rule having contract address ${data.nftContract}`;
                     const signature = await signMessageAsync({message : message});
-                    console.log(signature)
-                    if(signature !== undefined){
-                        router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                    if(signature != null){
+                    const res = await axios.put("/api/room",{
+                    owner : address,
+                    rule : Rule.NftRule,
+                    nftAddress : data.nftContract,
+                    roomId : signature.slice(0,10)
+                    });
+                    if(res.data.status){
+                        router.push(`/room/${signature.slice(0,10)}/${address}`);
                     }
+                }
                 }
             }
             else{
@@ -101,19 +117,26 @@ const CreateRoom = () => {
                     const message = `Creating a room with name ${data.roomName} and nft rule having contract address ${data.tokenContract} and a count of ${data.tokenContract}`;
                     const signature = await signMessageAsync({message : message});
                     console.log(signature)
-                    if(signature !== undefined){
-                         router.push(`/room/${signature.slice(0,10)}}/${address}`)
+                    if(signature != null){
+                        const res = await axios.put("/api/room",{
+                        owner : address,
+                        rule : Rule.TokenRule,
+                        tokenCount : data.tokenCount,
+                        tokenContract : data.tokenContract,
+                        roomId : signature.slice(0,10)
+                        });
+                        if(res.data.success){
+                            router.push(`/room/${signature.slice(0,10)}/${address}`);
+                        }
                     }
                 }
             }
-        }catch(e){
+            }catch(e){
             console.log(e);
-        }finally{
+            }finally{
             setLoading(false);
-        }
+            }
     }
-
-    const [selectedRule,SetSelectedRule] = useState<number|null>(null);
 
     return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 text-white overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">

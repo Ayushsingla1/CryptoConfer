@@ -7,17 +7,17 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-    lineaSepolia
+    baseSepolia
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
   QueryClient,
 } from "@tanstack/react-query";
 
-const config = getDefaultConfig({
+export const config = getDefaultConfig({
     appName: 'DOF',
     projectId: 'random',
-    chains: [lineaSepolia],
+    chains: [baseSepolia],
     ssr: true, 
   });
 

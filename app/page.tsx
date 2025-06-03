@@ -6,13 +6,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { useAccount } from "wagmi";
+import { Rule } from "./lib/rooms-data";
+import { readContract} from '@wagmi/core'
+import { erc20Abi, erc721Abi } from 'viem'
+import { useConfig } from "wagmi";
 
 const Index = () => {
 
+  const config = useConfig();
+  console.log(config)
   const router = useRouter();
   const [joinProp,setJoinProp] = useState<boolean>(false);
   const [roomId,setRoomId] = useState<string>("");
   const {address} = useAccount();
+
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -98,7 +105,41 @@ const Index = () => {
         return alert("No such room exists");
       }
       else {
-        return router.push(`/room/${roomId}/${address}`);
+        const rules = res.data.rule;
+        console.log(rules);
+        if(rules.type === Rule.NoRule){
+          return router.push(`/room/${roomId}/${address}`);
+        }
+        else if(rules.type === Rule.TokenRule){
+          const result = await readContract(config,{
+            abi : erc20Abi,
+            address : rules.tokenAddress,
+            functionName : 'balanceOf',
+            args : [address]
+          })
+          
+          if((Number(result.toString())/(10 ** 18)) >= rules.tokenCount){
+            return router.push(`/room/${roomId}/${address}`);
+          }
+          else{
+            return alert("You dont have enough tokens");
+          }
+        }
+        else if(rules.type === Rule.NftRule){
+          const result = await readContract(config,{
+            abi : erc721Abi,
+            address : rules.nftAddress,
+            functionName : 'balanceOf',
+            args : [address]
+          })
+
+          if(Number(result.toString()) !== 0){
+            return router.push(`/room/${roomId}/${address}`);
+          }
+          else return alert("You dont have required nft");
+        }
+
+        else return alert("Error! try again later");
       }
     }
   };
