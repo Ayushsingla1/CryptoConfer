@@ -1,5 +1,5 @@
 import { ReceivedChatMessage } from "@livekit/components-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAccount } from "wagmi";
 
 
@@ -11,7 +11,7 @@ const ChatComponent = ({ setChatOpened , chatMessages, send, isSending}: { setCh
 
     console.log(chatMessages);
 
-    const handleSend = async (e: any) => {
+    const handleSend = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (message.trim().length === 0) return alert("No message entered");
         const res = await send(message);
@@ -48,7 +48,7 @@ const ChatComponent = ({ setChatOpened , chatMessages, send, isSending}: { setCh
 
             <div className="flex gap-x-2">
                 <input className="border-2 border-gray-600 w-10/12 rounded-md px-2 py-1 h-10" placeholder="Enter Your Message" value={message} name="message" onChange={(e) => setMessage(e.target.value)} />
-                <button disabled={isSending || message.trim().length === 0} onClick={handleSend} className={`px-4 py-2 rounded-md text-white ${isSending || message.trim().length === 0
+                <button disabled={isSending || message.trim().length === 0} onClick={(e) => handleSend(e)} className={`px-4 py-2 rounded-md text-white ${isSending || message.trim().length === 0
                     ? 'bg-gray-500 cursor-not-allowed'
                     : 'bg-blue-600 hover:bg-blue-500'
                     } transition`}>{isSending ? 'Sending...' : 'Send'}</button>
