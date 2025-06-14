@@ -1,4 +1,3 @@
-
 export const floatingVariants = {
     animate: {
       y: [-10, 10, -10],

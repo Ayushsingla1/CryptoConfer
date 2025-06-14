@@ -3,7 +3,8 @@ export enum Rule {
     NftRule = 1,
     TokenRule = 2
 }
-type Control = {
+
+export type Control = {
     type : Rule,
     nftAddress? : string,
     tokenAddress? : string,
