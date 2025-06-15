@@ -4,7 +4,6 @@ import {
   ParticipantTile,
   RoomAudioRenderer,
   RoomContext,
-  ControlBar,
   useTracks,
   useChat,
 } from '@livekit/components-react';
@@ -13,11 +12,11 @@ import '@livekit/components-styles';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import ChatComponent from '@/app/components/chatComponents';
+import CustomControlBar from '@/app/components/customControlBar';
 
 export default function Page() {
 
   const params = useParams();
-  // const {} = useDisconnectButton();
   const room = params.roomId;
   const name = params.userId;
   const [roomInstance] = useState(() => new Room({
@@ -51,7 +50,8 @@ export default function Page() {
       <div data-lk-theme="default" style={{ height: '100dvh' }} className='bg-black'>
         <MyVideoConference />
         <RoomAudioRenderer />
-        <ControlBar />
+        {/* <ControlBar /> */}
+        <CustomControlBar/>
       </div>
     </RoomContext.Provider>
   );
