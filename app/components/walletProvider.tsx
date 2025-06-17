@@ -1,13 +1,13 @@
 "use client"
 import '@rainbow-me/rainbowkit/styles.css';
 import {
-    darkTheme,
+  darkTheme,
   getDefaultConfig,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-    baseSepolia
+  sepolia
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -17,7 +17,7 @@ import {
 export const config = getDefaultConfig({
     appName: 'DOF',
     projectId: 'random',
-    chains: [baseSepolia],
+    chains: [sepolia],
     ssr: true, 
   });
 
