@@ -66,7 +66,7 @@ export const createRoom = async (signMessageAsync: SignMessageMutateAsync<unknow
                 return { success: false }
             }
             else {
-                const message = `Creating a room with name ${data.roomName} and nft rule having contract address ${data.tokenContract} and a count of ${data.tokenContract}`;
+                const message = `Creating a room with name ${data.roomName} and token rule having contract address ${data.tokenContract} and a count of ${data.tokenCount}`;
                 const signature = await signMessageAsync({ message: message });
                 console.log(signature)
                 if (signature != null) {

@@ -27,7 +27,7 @@ const tranfer = async (writeContractAsync: WriteContractMutateAsync<Config, unkn
                 abi: ABI,
                 address: CONTRACT_ADDRESS,
                 functionName: "transfer",
-                args: [participants, (amount * (10**6))]
+                args: [participants, (amount * (10**18))]
             }
         )
     }
@@ -38,7 +38,7 @@ const tranfer = async (writeContractAsync: WriteContractMutateAsync<Config, unkn
 }
 
 export const sendTokens = async (writeContractAsync: WriteContractMutateAsync<Config, unknown>, participants: string[], amount: number) => {
-    const totalAmount = participants.length * amount * (10 ** 6);
+    const totalAmount = participants.length * amount * (10 ** 18);
     await approve(writeContractAsync, totalAmount);
     await tranfer(writeContractAsync, amount, participants);
 }
